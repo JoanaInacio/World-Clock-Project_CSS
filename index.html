@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Clock - Joana Inacio</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.37/moment-timezone-with-data-1970-2030.min.js"></script>
+
+    <style>
+      body {
+        background-color: #f9f7fe;
+        font-family: sans-serif;
+      }
+      h1 {
+        text-align: center;
+        font-family: sans-serif;
+        font-size: 36px;
+      }
+      h2 {
+        margin: 0 0 5px;
+        font-size: 28px;
+      }
+      select {
+        display: block;
+        width: 100%;
+        font-size: 18px;
+        border-radius: 4px;
+        padding: 10px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 60px auto;
+        background: white;
+        padding: 30px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        border-radius: 10px;
+      }
+      .city {
+        display: flex;
+        margin: 10px 0;
+        justify-content: space-between;
+        padding: 30px 0;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+      }
+      .city:last-child {
+        border: none;
+      }
+      .date {
+        opacity: 0.7;
+      }
+      .time {
+        font-size: 48px;
+        font-weight: bold;
+      }
+      .time small {
+        font-size: 24px;
+        vertical-align: middle;
+        line-height: 48px;
+      }
+      footer {
+        text-align: center;
+        font-size: 18px;
+        color: rgba(0, 0, 0, 0.8);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>World Clock</h1>
+
+      <select id="cities">
+        <option value="">Select a city..</option>
+        <option value="Europe/Lisbon">Lisbon &#x1F1F5;&#x1F1F9;</option>
+        <option value="Europe/Paris">Paris &#x1F1EB;&#x1F1F7;</option>
+        <option value="Asia/Tokyo">Tokyo &#x1F1EF;&#x1F1F5;</option>
+        <option value="Australia/Sydney">Sydney &#x1F1E6;&#x1F1FA;</option>
+        <option value="America/New_York">New York &#x1F1FA;&#x1F1F8;</option>
+      </select>
+
+      <div class="city" id="selected-city" style="display: none">
+        <div>
+          <h2 id="city-name"></h2>
+          <div class="date" id="city-date"></div>
+        </div>
+        <div class="time" id="city-time"></div>
+      </div>
+    </div>
+
+    <footer>
+      This project was coded with ❤️ by
+      <strong
+        ><a href="https://github.com/JoanaInacio" target="_blank"
+          >Joana Inacio</a
+        ></strong
+      >
+      and is
+      <a
+        href="https://github.com/JoanaInacio/World-Clock-Project_CSS"
+        target="_blank"
+      >
+        open sourced on GitHub</a
+      >
+    </footer>
+
+    <script>
+      let clockInterval;
+
+      function updateClock(timezone, cityName) {
+        let now = moment().tz(timezone);
+        let timeString = now.format("h:mm:ss");
+        let ampm = now.format("A");
+        let dateString = now.format("MMMM Do YYYY");
+
+        document.getElementById("city-name").textContent = cityName;
+        document.getElementById("city-date").textContent = dateString;
+        document.getElementById(
+          "city-time"
+        ).innerHTML = `${timeString} <small>${ampm}</small>`;
+      }
+
+      function showCityTime() {
+        let citySelect = document.getElementById("cities");
+        let selectedCity = document.getElementById("selected-city");
+        let timezone = citySelect.value;
+
+        if (timezone) {
+          let cityName = citySelect.options[citySelect.selectedIndex].text;
+          selectedCity.style.display = "flex";
+
+          if (clockInterval) {
+            clearInterval(clockInterval);
+          }
+
+          updateClock(timezone, cityName);
+          clockInterval = setInterval(
+            () => updateClock(timezone, cityName),
+            1000
+          );
+        } else {
+          selectedCity.style.display = "none";
+          if (clockInterval) {
+            clearInterval(clockInterval);
+          }
+        }
+      }
+
+      let citySelect = document.getElementById("cities");
+      citySelect.addEventListener("change", showCityTime);
+    </script>
+  </body>
+</html>
